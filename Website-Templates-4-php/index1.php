@@ -69,12 +69,46 @@
 </div>
 
 <!-- PHP ส่วนของการประมวลผล -->
-<?php
-// โค้ด PHP ส่วนนี้สามารถใช้สำหรับการประมวลผลข้อมูลหรือสร้างเนื้อหาได้ตามต้องการ
-// ตัวอย่างเช่นการดึงข้อมูลจากฐานข้อมูล หรือการสร้างเนื้อหาตามเงื่อนไขต่าง ๆ
-// ในที่นี้เราจะเขียนโค้ด PHP ที่แสดงตัวอย่างข้อความ
-echo "<p>This is a sample PHP content.</p>";
+?php
+// เชื่อมต่อฐานข้อมูล MySQL
+$servername = "localhost"; // เชื่อมต่อกับ MySQL ที่อยู่ในเซิร์ฟเวอร์ localhost
+$username = "username"; // ชื่อผู้ใช้ของ MySQL
+$password = "password"; // รหัสผ่านของ MySQL
+$dbname = "dbname"; // ชื่อฐานข้อมูลที่ต้องการเชื่อมต่อ
+
+// สร้างการเชื่อมต่อ
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// ตรวจสอบการเชื่อมต่อ
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// เมื่อมีการส่งข้อมูล
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST["name"];
+    $email = $_POST["email"];
+
+    // เพิ่มข้อมูลลงในฐานข้อมูล
+    $sql = "INSERT INTO your_table_name (name, email) VALUES ('$name', '$email')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+// ปิดการเชื่อมต่อ MySQL
+$conn->close();
 ?>
+
+<!-- ฟอร์มสำหรับส่งข้อมูล -->
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+  Name: <input type="text" name="name"><br>
+  Email: <input type="text" name="email"><br>
+  <input type="submit">
+</form>
 
 </body>
 </html>
